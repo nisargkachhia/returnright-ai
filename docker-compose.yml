@@ -1,0 +1,28 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      DEMO_MODE: "true"
+      DEMO_USER_ID: demo-user-1
+      DATABASE_URL: sqlite:///./data/returnright.db
+      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173,http://localhost:8080,http://127.0.0.1:8080
+      MCP_STATELESS_HTTP: "true"
+      MCP_JSON_RESPONSE: "true"
+    volumes:
+      - rr-data:/app/data
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_MCP_URL: /mcp/
+        VITE_DEMO_MODE: "true"
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  rr-data:
